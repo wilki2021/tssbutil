@@ -1,0 +1,114 @@
+BOOSTER audit log ^
+
+COMMAND ---> READ MARKET LIST "symbols.txt" ; 
+User specified 1 markets.
+IBM 
+
+COMMAND ---> READ MARKET HISTORIES "ibm.txt" ; 
+ 
+Reading market histories (*.TXT) from path 
+     IBM had  1000 cases (19900102 000000 through 19931213 000000)  Max ratio = 1.12 on 19921216 000000
+
+COMMAND ---> READ VARIABLE LIST "vars.txt" ; 
+
+Temporary work file is ^
+Database file is ^
+
+
+Summary information for variable P_TREND:
+Market  Fbad  Bbad  Nvalid    First     Last         Min        Max       Mean
+  IBM    100     0     900  19900524  19931213    -49.986     48.338     -2.184
+
+Summary information for variable P_VOLATILITY:
+Market  Fbad  Bbad  Nvalid    First     Last         Min        Max       Mean
+  IBM     19     0     981  19900129  19931213    -49.220     49.636      1.331
+
+Summary information for variable DAY_RETURN:
+Market  Fbad  Bbad  Nvalid    First     Last         Min        Max       Mean
+  IBM    250     2     748  19901227  19931209     -4.032      4.057     -0.042
+
+User defined 3 variables
+Wrote 748 records to the database
+
+     IBM    748
+
+COMMAND ---> MODEL SIMPLE_MODEL IS LINREG [ 
+              INPUT = [ P_TREND P_VOLATILITY ] 
+              OUTPUT = DAY_RETURN 
+              MAX STEPWISE = 0 
+              CRITERION = PROFIT FACTOR 
+              MIN CRITERION FRACTION = 0.1 
+              ] ; 
+
+COMMAND ---> TRAIN; 
+
+
+-----------------------------------------------------
+Training using complete dataset
+-----------------------------------------------------
+
+
+LINREG Model SIMPLE_MODEL predicting DAY_RETURN
+Stepwise not used; all predictors available to model
+Regression coefficients:
+          0.001205  P_TREND
+          0.000126  P_VOLATILITY
+         -0.038986  CONSTANT
+
+Target grand mean = -0.04192
+Outer hi thresh = -0.01455  with 117 of 748 cases at or above (15.64 %)  Mean = 0.06314 versus -0.06140
+Outer lo thresh = -0.06834  with 93 of 748 cases at or below (12.43 %)  Mean = -0.10435 versus -0.03306
+
+Target statistics at various percentages kept...
+Statistic                    10           25           50           75           90
+
+Mean target above        -0.0149       0.0241      -0.0238      -0.0513      -0.0448
+N wins above                  37           97          177          246          297
+Mean win above            0.5417       0.5444       0.5413       0.5347       0.5528
+Total win above             20.0         52.8         95.8        131.5        164.2
+N losses above                36           85          181          287          341
+Mean loss above           0.5874       0.5683       0.5786       0.5585       0.5699
+Total loss above            21.1         48.3        104.7        160.3        194.4
+Profit factor above       0.9477       1.0932       0.9149       0.8206       0.8448
+
+Mean target below        -0.0161      -0.0139      -0.0600      -0.0639      -0.0449
+N wins below                  36           90          196          292          341
+Mean win below            0.6154       0.6246       0.5703       0.5760       0.5729
+Total win below             22.2         56.2        111.8        168.2        195.4
+N losses below                36           87          156          236          296
+Mean loss below           0.5822       0.6163       0.5726       0.5608       0.5578
+Total loss below            21.0         53.6         89.3        132.3        165.1
+Profit factor below       1.0570       1.0485       1.2512       1.2709       1.1832
+
+MSE = 0.54638   R-squared = 0.00111   ROC area = 0.52002
+Buy-and-hold profit factor = 0.855   Sell-short-and-hold = 1.169
+Dual-thresholded outer PF = 1.326
+   Outer long-only PF = 1.254   Improvement Ratio = 1.466
+   Outer short-only PF = 1.416  Improvement Ratio = 1.211
+
+Equity-curve-based statistics for 748 dates...
+  117 long trades; total return = 7.39  mean-per-bar = 0.0099
+    Max drawdown = 7.55 on 19921104  79 bars dropping  345 days to recovery
+  93 short trades; total return = 9.70  mean-per-bar = 0.0130
+    Max drawdown = 4.14 on 19920918  395 bars dropping  453 days to recovery
+  210 total trades; net return = 17.09  mean-per-bar = 0.0229
+    Max drawdown = 6.41 on 19921120  281 bars dropping  295 days to recovery
+
+
+Trade statistics above and below the upper (long) and lower (short) thresholds
+
+                     Above          Below          Above          Below
+                     Upper          Upper          Lower          Lower
+
+N of trades            117            631            655             93
+N of winners            65            268            363             52
+Percent winners       55.6           42.5           55.4           55.9
+N of losers             52            363            292             41
+Percent losers        44.4           57.5           44.6           44.1
+Mean profit         0.0631        -0.0614         0.0331         0.1043
+Total profit          7.39         -38.75          21.65           9.70
+Max profit           2.191          4.057          3.663          4.032
+Min profit          -2.299         -4.032         -4.057         -1.487
+Profit factor        1.254          0.793          1.134          1.416
+Mean win            0.5614         0.5547         0.5054         0.6353
+Mean lose           0.5597         0.5163         0.5542         0.5690
