@@ -64,6 +64,7 @@ def run_tssb(script, tssb_path='tssb64.exe'):
     :throws:  Various exceptions possible.  Primary exception conditions are:
                 - Could not locate tssb64.exe executable
                 - TSSB could not locate the script file
+                - Syntax and/or Script error
     '''
     app = application.Application.start(tssb_path)
 

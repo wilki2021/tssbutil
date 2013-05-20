@@ -54,6 +54,39 @@ Once you have successfully cloned the tssbutil repository, run the following.
 
     python.exe setup.py install
   
+## tssbutil Component Overview
+
+This section contains a brief overview of tssbutil components.  All modules, 
+classes, and methods have embedded docstring-style documentation for more
+detail.
+
+### tssbutil.runtssb
+ 
+This modules contains the run_tssb() function that can be called to invoke
+TSSB for a given script.
+
+### tssbutil.paudit
+
+This module contains the AuditParser class that is used to parse an `AUDIT.LOG'
+output file from TSSB.
+
+### tssbutil.tssbrun
+
+This module contains the data model used to represent output of a TSSB run.
+An instance of TSSBRun is created by AuditParser when it parses an `AUDIT.LOG`
+file.  See its docstring documentation for details on the model.
+
+### tssbutil.pvars
+
+This modules contains the VarParser class that can be used to parse a TSSB
+variable definition file.
+
+### tssbutil.sedlite
+
+This module contains the sed_lite() method.  This is a utility function 
+that can be used to facilitate parametrized script file creation (see the
+outer_wf.py in examples/ for an example of template instantiation).
+
 ## Using the example
 
 There is an example that uses the main components of tssbutil to implement an 
