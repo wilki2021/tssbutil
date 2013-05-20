@@ -194,7 +194,9 @@ class ModelStats(object):
         self.mean_above_high   = 0.0
         self.mean_below_low    = 0.0
         self.roc_area          = 0.0
+        self.long_profit_fac   = 0.0
         self.long_only_imp     = 0.0
+        self.short_profit_fac  = 0.0
         self.short_only_imp    = 0.0
         self.long_total_ret    = 0.0
         self.short_total_ret   = 0.0

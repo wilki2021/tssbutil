@@ -218,21 +218,27 @@ class AuditParser(object):
                 mat1 = patt6.match(line) 
                 assert(mat1.group(1) == 'long')
                 if mat1.group(2).find('is infinite') != -1:
+                    wfmstats.long_profit_fac = float('Inf')
                     wfmstats.long_only_imp = float('Inf')
                 elif mat1.group(2).find('is undefined') != -1:
+                    wfmstats.long_profit_fac = float('NaN')
                     wfmstats.long_only_imp = float('NaN')
                 else:
                     mat2 = patt6b.match(mat1.group(2))
+                    wfmstats.long_profit_fac = float(mat2.group(1))
                     wfmstats.long_only_imp = float(mat2.group(2))
 
                 mat1 = patt6.match(self.__get_line()) 
                 assert(mat1.group(1) == 'short')
                 if mat1.group(2).find('is infinite') != -1:
+                    wfmstats.short_profit_fac = float('Inf')
                     wfmstats.short_only_imp = float('Inf')
                 elif mat1.group(2).find('is undefined') != -1:
+                    wfmstats.short_profit_fac = float('NaN')
                     wfmstats.short_only_imp = float('NaN')
                 else:
                     mat2 = patt6b.match(mat1.group(2))
+                    wfmstats.short_profit_fac = float(mat2.group(1))
                     wfmstats.short_only_imp = float(mat2.group(2))
                 pstate = 4
             elif pstate == 4 and patt7.match(line):
