@@ -3,10 +3,10 @@ tssbutil
 
 This is an automation framework for Trading System Synthesis and Boosting 
 (TSSB).  TSSB is nice package available here from 
-[[http://www.tssbsoftware.com/|Hood River Research]] for the 
+|Hood River Research](http://www.tssbsoftware.com/) for the 
 development of predictive model-based trading systems, but right now it is
 GUI only and the output is in verbose log files.  The tssbutil framework uses
-[[http://code.google.com/p/pywinauto/|pywinauto]] to enable a user to run a
+[pywinauto](http://code.google.com/p/pywinauto/) to enable a user to run a
 TSSB script via a Python function invocation.  It also provides a parser that
 converts TSSB output to an intuitive hierarchical data model.
 
@@ -25,30 +25,30 @@ pywinauto worked fine on my 64-bit Windows 7 installation and 64-bit TSSB
 executable. 
 
 The Python download page is 
-[[http://www.python.org/getit/|here]].  I recommend the 2.7.x non-64-bit 
+[here](http://www.python.org/getit/).  I recommend the 2.7.x non-64-bit 
 Windows installer.  Install to a directory of your choice and add the Python
 directory to your PATH for convenience.
 
 Then, download the pywinauto package from 
-[[http://code.google.com/p/pywinauto/|here]].  Installation instructions are
-[[http://pywinauto.googlecode.com/hg/pywinauto/docs/index.html#installation|here]]. 
+[here](http://code.google.com/p/pywinauto/).  Installation instructions are
+[here](http://pywinauto.googlecode.com/hg/pywinauto/docs/index.html#installation). 
 
 Next, you need to clone this repository.  If you are a cygwin user like me, you
 can install and use git from the cygwin shell:
   
-  git clone git@github.com:wilki2021/tssbutil.git
+    git clone git@github.com:wilki2021/tssbutil.git
   
 Alternatively, there is a Windows version of git available 
-[[http://code.google.com/p/msysgit/downloads/list?q=full+installer+official+git|here]].
+[here](http://code.google.com/p/msysgit/downloads/list?q=full+installer+official+git).
 
 Note that when choosing a directory to clone to, it is better to choose a path
 without a '.' in it if you want to be able to use the example as-is (ex. 
 C:\users\john.doe\workspace would not work).  This is due to a TSSB limitation 
-and its 'READ MARKET HISTORIES' command.
+and its `READ MARKET HISTORIES` command.
 
 Once you have successfully cloned the tssbutil repository, run the following.
 
-  python.exe setup.py install
+    python.exe setup.py install
   
 ## Using the example
 
@@ -56,14 +56,14 @@ There is an example that uses the main components of tssbutil to implement an
 "outer" walk-forward loop.  The example is entirely self-contained within the
 tssbutil, so running is as simple as:
 
-  python.exe examples/outer_wf.py
+    python.exe examples/outer_wf.py
   
-With not arguments, this will display the usage screen:
+With no arguments, this will display the usage screen:
 
-  C:\tssbutil\examples>python outer_wf.py
-  Not enough arguments to outer_wf!
+    C:\tssbutil\examples>python outer_wf.py
+    Not enough arguments to outer_wf!
   
-  usage: outer_wf.py <year-start> <year-end>
+    usage: outer_wf.py <year-start> <year-end>
   
     Performs an "outer" walk-forward analysis loop across a series of
     years per the command-line arguments.  Each "inner" walk-forward 
@@ -110,16 +110,16 @@ in `perf.csv` for 2002 is the out-of-sample results for 2004.
 
 Here's output from an example run:
 
-  C:\tssbutil\examples>python.exe outer_wf.py 2002 2003
-  Running iteration for year 2002
-  Running iteration for year 2003
-  Walk-forward results written to perf.csv
+    C:\tssbutil\examples>python.exe outer_wf.py 2002 2003
+    Running iteration for year 2002
+    Running iteration for year 2003
+    Walk-forward results written to perf.csv
 
 And the contents of perf.csv:
 
-  year,BEST1,BEST2,COMM1,COMM2
-  2002,1.2210,1.4100,1.4100,2.1950
-  2003,4.3100,1.1930,1.1930,1.4740
+    year,BEST1,BEST2,COMM1,COMM2
+    2002,1.2210,1.4100,1.4100,2.1950
+    2003,4.3100,1.1930,1.1930,1.4740
 
 Note that there are likely many more measurements than just the long
 profit factor improvement ration that are desirable from the outer walk-forward 
