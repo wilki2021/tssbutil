@@ -17,9 +17,9 @@ usage: outer_wf.py <year-start> <year-end>
 
     Performs an "outer" walk-forward analysis loop across a series of
     years per the command-line arguments.  Each "inner" walk-forward 
-    is a discrete (and currently hard-coded) series of steps to select
-    a smaller indicator set from a larger one and then select and train
-    a series of models from them.
+    is used to select models that perform well on an out-of-sample data
+    set which thin feeds the "outer" walk-forward loop to get unbaised
+    estimation of future performance
     
     Parameters:
         <year-start>  - integer, year to start the outer walk forward.
