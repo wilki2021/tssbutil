@@ -13,7 +13,10 @@ in `tssbrun.py`.
 
 ## Installation
 
-tssbutil depends on Python and the pywinauto package.  As TSSB is a windows-
+tssbutil of course depends on TSSB.  Follow the link above to the download
+page and then place the `tssb64.exe` link in your PATH somewhere.
+
+tssbutil also depends on Python and the pywinauto package.  As TSSB is a windows-
 only package, it is assumed that the installation and usage will occur on
 a Windows platform (although parsers are cross-platform and should work in 
 any environment).
