@@ -8,7 +8,8 @@ development of predictive model-based trading systems, but right now it is
 GUI only and the output is in verbose log files.  The tssbutil framework uses
 [pywinauto](http://code.google.com/p/pywinauto/) to enable a user to run a
 TSSB script via a Python function invocation.  It also provides a parser that
-converts TSSB output to an intuitive hierarchical data model.
+converts TSSB output to an intuitive hierarchical data model (see documentation
+in `tssbrun.py`.
 
 ## Installation
 
@@ -31,7 +32,7 @@ directory to your PATH for convenience.
 
 Then, download the pywinauto package from 
 [here](http://code.google.com/p/pywinauto/).  Installation instructions are
-[here](http://pywinauto.googlecode.com/hg/pywinauto/docs/index.html#installation). 
+[here](http://pywinauto.googlecode.com/hg/pywinauto/docs/index.html#installation).
 
 Next, you need to clone this repository.  If you are a cygwin user like me, you
 can install and use git from the cygwin shell:
@@ -155,7 +156,3 @@ repo directory using the included `test.bat` script.
     
 You will see lots of windows coming and going from the run_tssb() tests - when
 that finishes look for `Ok` to see that all tests have passed.
-
-Note that any new capability added to tssbutil should add new tests or extent
-existing tests to provide coverage of it.      
- 

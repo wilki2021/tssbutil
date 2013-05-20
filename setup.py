@@ -1,8 +1,3 @@
-'''
-Created on May 20, 2013
-
-@author: bwilkinson
-'''
 from distutils.core import setup
 
 setup(name='tssbutil',
