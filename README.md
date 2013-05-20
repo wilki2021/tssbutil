@@ -3,7 +3,7 @@ tssbutil
 
 This is an automation framework for Trading System Synthesis and Boosting 
 (TSSB).  TSSB is nice package available here from 
-|Hood River Research](http://www.tssbsoftware.com/) for the 
+[Hood River Research](http://www.tssbsoftware.com/) for the 
 development of predictive model-based trading systems, but right now it is
 GUI only and the output is in verbose log files.  The tssbutil framework uses
 [pywinauto](http://code.google.com/p/pywinauto/) to enable a user to run a
@@ -90,16 +90,16 @@ regression models using stepwise selection (in an exclusion group to prevent
 redundant input usage) and then walks forward by 10 years for a single year 
 (the *validation* year). 
 
-Then the output of 'stage1.txt' is examined to determine which models
+Then the output of `stage1.txt` is examined to determine which models
 performed best in the out-of-sample period (i.e. the *validation* year).
 The two best 2-input models are input into `stage2.txt`, the "outer"
 walk-forward loop, where they are run independently as will as inputs
-into two different COMMITTEEs.  Then 'stage2.txt' trains an one 11 year 
+into two different COMMITTEEs.  Then `stage2.txt` trains an one 11 year 
 period (the original training set plus the validation year) and tests 
 one walk-forward period (the *test* year).  The performance in the *test*
-year should be an unbiased estimate of future performance of this model.  
+year *should* be an unbiased estimate of future performance of this model.  
 
-This process is repeated once per year between <year-start> and <year-end>
+This process is repeated once per year between `<year-start>` and `<year-end>`
 specified on the command-line.  The example outputs a .csv file `perf.csv`
 with long profit factor improvement ratios for the out-of-sample periods
 of each model and committee from `stage2.txt`.  Note that by convention,
@@ -129,7 +129,7 @@ their particular use case.
 
 ## Troubleshooting & Misc.
 
-While creating tssbutil, the behavior of pywinauto was seen to be be highly
+While creating tssbutil, the behavior of pywinauto was found to be be highly
 non-deterministic, especially in computationally intensive TSSB runs and also very
 short TSSB runs.  I believe the current run_tssb() to be generally usable, 
 but doubtless other issues will arise.  The code depends on certain arbitrary
