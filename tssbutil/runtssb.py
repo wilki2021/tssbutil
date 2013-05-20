@@ -101,7 +101,7 @@ def run_tssb(script, tssb_path='tssb64.exe'):
             time.sleep(0.5)
     
     # arbitrary sleep to make sure the script starts        
-    time.sleep(0.5)
+    time.sleep(1.0)
     
     # step 5 - monitor for completion.  If the script runs to completion
     # we'll eventually get a successful MenuSelect call for File->Exit.
@@ -130,7 +130,7 @@ def run_tssb(script, tssb_path='tssb64.exe'):
         # this is the normal busy-loop check
         try:
             app.window_(title=script).MenuSelect('File->Exit')
-            time.sleep(0.5)
+            time.sleep(1.0)
             if 'tssb64.exe' in get_process_list():
                 # this should not happen - it means the MenuSelect call went 
                 # through without exception but the process is still running
@@ -140,9 +140,14 @@ def run_tssb(script, tssb_path='tssb64.exe'):
         except pywinauto.controls.menuwrapper.MenuItemNotEnabled:
             time.sleep(1.0)
         except pywinauto.findwindows.WindowNotFoundError:
-            # this is a strange case that appears to be caused when the app is 
-            # too busy.  By defn our main window can't go away until we do a 
-            # File->Exit so it makes no sense.  Just sleep and try again
+            # this can happen in a few different cases.  Have seen this exception
+            # when TSSB is still actually running so cannot blindly assume we are
+            # done.  Have also see us get here because calls to File->Exit actually
+            # did work but we still have a tssb64.exe process running.
+            if not 'tssb64.exe' in get_process_list():
+                # if window not found and process not running then we should be
+                # ok to exit.
+                break
             time.sleep(1.0)
         except:
             # this is an exception we don't expect.  Print it for debugging, 
