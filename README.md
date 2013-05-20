@@ -138,4 +138,24 @@ delays and various different checks that should otherwise be redundant.
 Finally, note there is guaranteed to be much AUDIT.LOG output that the AuditParser
 does not support.  It currently works for standard training/walk-forward with 
 models and committees, as well as a `FIND GROUPS` run.  TSSB has many, many other
-options - future parse support for these will be added as needed. 
+options - future parse support for these will be added as needed.
+
+## For Developers
+
+tssbutil includes a suite of unit tests that should be used to regression test
+any changes made to the framework.  All tests can be executed from the top-level
+repo directory using the included `test.bat` script.
+
+    C:\tssbutil>python -m unittest discover tssbutil\test "*.py" tssbutil\test
+    ...........
+    ----------------------------------------------------------------------
+    Ran 11 tests in 7.323s
+    
+    OK
+    
+You will see lots of windows coming and going from the run_tssb() tests - when
+that finishes look for `Ok` to see that all tests have passed.
+
+Note that any new capability added to tssbutil should add new tests or extent
+existing tests to provide coverage of it.      
+ 
