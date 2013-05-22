@@ -36,6 +36,27 @@ import traceback
 import sys
 import os
 
+class ZombieException(Exception):
+    pass
+
+class TSSBException(Exception):
+    pass
+
+def kill_tssb(retry_cnt=3):
+    print 'Attempting to kill any running tssb64.exe processes...'
+    tries = 0
+    while tries < retry_cnt:
+        tries = tries + 1
+        cmd = 'wmic process where name="tssb64.exe" Call Terminate'
+        os.system(cmd)
+        if not 'tssb64.exe' in get_process_list():
+            print 'Successfully killed tssb64.exe.' 
+            return
+        else:
+            print 'Kill tssb64.exe failed, trying %d more times...' % (retry_cnt - tries)
+            # oops, something went wrong - will retry next time through
+    raise Exception('ERROR - unable to kill tssb64.exe')
+    
 def get_process_list():
     ret = set()
     hand = os.popen("wmic process get description")
@@ -46,7 +67,52 @@ def get_process_list():
     hand.close()
     return ret
      
-def run_tssb(script, tssb_path='tssb64.exe'):
+def check_for_last_cmd(script, log):
+    # first we have to figure out the last command in the script file
+    f = open(script)
+    last_cmd = ''
+    nested = False
+    for l in f.readlines():
+        l = l.strip()
+        if not nested and l.find(';') != -1:
+            last_cmd = l[:l.find(';')]
+        elif l.find('[') != -1 and l.find(']') == -1:
+            last_cmd = l[:l.find('[')]
+            nested = True
+        elif nested and l.find(';') != -1:
+            nested = False
+    f.close()
+    
+    f = open(log)        
+    for l in f.readlines():
+        l = l.strip()
+        if l.find('COMMAND ---> %s' % last_cmd) == 0:
+            f.close()            
+            return True
+    f.close()
+    return False
+    
+def run_tssb(script, tssb_path='tssb64.exe', retry_cnt=3):
+    # first make sure there are no tssb64.exe processes already running.  We
+    # need to be the only one running those processes for run_tssb to work
+    while 'tssb64.exe' in get_process_list():
+        print 'Warning...tssb64.exe process already running, attempting to kill'
+        kill_tssb()
+        
+    # arbitrary number of retries
+    tries = 0
+    while tries < retry_cnt:
+        try:
+            tries = tries + 1
+            run_tssb_try(script, tssb_path)
+            return        
+        except ZombieException:
+            print 'tssb64.exe failed with zombie process, trying %d more times...' % (retry_cnt - tries)
+            kill_tssb()
+            pass
+    raise Exception('ERROR - unable to successfully complete tssb64.exe')
+
+def run_tssb_try(script, tssb_path, zombie_limit=10):
     '''
     run_tssb performs a run of TSSB for the specified script file.  If the
     function returns without exception then it can be assumed that there is 
@@ -66,6 +132,8 @@ def run_tssb(script, tssb_path='tssb64.exe'):
                 - TSSB could not locate the script file
                 - Syntax and/or Script error
     '''
+    runpath = os.path.split(script)[0]
+    
     app = application.Application.start(tssb_path)
 
     # step 1 - we know that there will always be a Liability Disclaimer window
@@ -120,66 +188,87 @@ def run_tssb(script, tssb_path='tssb64.exe'):
             #  now close the main window
             app.window_(title_re="TSSB.*").MenuSelect('File->Exit')
             #  finally, throw an exception so the user knows what happened 
-            raise Exception('TSSB could not find script file: %s' % script)                        
+            raise TSSBException('TSSB could not find script file: %s' % script)                        
         try:
             app.window_(title="Script file to read").Open.Click()
         except:
             time.sleep(0.5)
     
     # arbitrary sleep to make sure the script starts        
-    time.sleep(1.0)
+    time.sleep(0.5)
     
-    # step 5 - monitor for completion.  If the script runs to completion
-    # we'll eventually get a successful MenuSelect call for File->Exit.
-    # the other possibility, however is that the script had errors.  We
-    # need to detect that and bail out if it occurs
+    # step 5 - monitor for completion.  Have rewritten this an unbelievable
+    # number of times as there is no clean way to know when TSSB64 is really
+    # done versus any other number of possible outcomes.  Currently settled
+    # on a primary condition that the final command in the script file has
+    # made it to the AUDIT.LOG call and then a subsequent call to the 
+    # File->Exit menu option
+    zombie_check = 0
     while True:
-        # this checks for the syntax error case
-        if len(app.windows_(title_re='Syntax.*')):
-            # oops - this means the script had some type of error.  We want
-            # to close the dialog exit and throw an exception
-            app.window_(title_re='Syntax.*').Close()
-            #  now close the main window
-            app.window_(title=script).MenuSelect('File->Exit')
-            #  finally, throw an exception so the user knows what happened 
-            raise Exception('TSSB found a syntax error in: %s' % script)                        
-        # this checks for another error case
-        if len(app.windows_(title_re='Error.*')):
-            # oops - this means the script had some type of error.  We want
-            # to close the dialog exit and throw an exception
-            app.window_(title_re='Error.*').Close()
-            #  now close the main window
-            app.window_(title=script).MenuSelect('File->Exit')
-            #  finally, throw an exception so the user knows what happened 
-            raise Exception('TSSB found errors in: %s' % script)                        
-        
         # this is the normal busy-loop check
+        
+        # first see if the tssb64.exe process has exited
+        if not 'tssb64.exe' in get_process_list():
+            # process is gone - let's see if the log looks good
+            if not check_for_last_cmd(script, os.path.join(runpath,'AUDIT.LOG')):
+                raise TSSBException('TSSB exited, but AUDIT.LOG looks incomplete')
+            break
+
+        # now our zombie state check
+        if zombie_check > zombie_limit:            
+            raise ZombieException()
+                    
         try:
-            app.window_(title=script).MenuSelect('File->Exit')
+            # this checks for the syntax error case
+            if len(app.windows_(title_re='Syntax.*')):
+                # oops - this means the script had some type of error.  We want
+                # to close the dialog exit and throw an exception
+                app.window_(title_re='Syntax.*').Close()
+                #  now close the main window
+                app.window_(title=script).MenuSelect('File->Exit')
+                #  finally, throw an exception so the user knows what happened 
+                raise TSSBException('TSSB found a syntax error in: %s' % script)                        
+
+            # this checks for another error case
+            if len(app.windows_(title_re='Error.*')):
+                # oops - this means the script had some type of error.  We want
+                # to close the dialog exit and throw an exception
+                app.window_(title_re='Error.*').Close()
+                #  now close the main window
+                app.window_(title=script).MenuSelect('File->Exit')
+                #  finally, throw an exception so the user knows what happened 
+                raise TSSBException('TSSB found errors in: %s' % script)                        
+        
+            w1 = app.window_(title=script)
+
+            if check_for_last_cmd(script, os.path.join(runpath,'AUDIT.LOG')):
+                zombie_check = 0
+                w1.MenuSelect('File->Exit')
+
             time.sleep(1.0)
-            if 'tssb64.exe' in get_process_list():
-                # this should not happen - it means the MenuSelect call went 
-                # through without exception but the process is still running
-                pass
-            else:
-                break
+                                
         except pywinauto.controls.menuwrapper.MenuItemNotEnabled:
+            # this is theoretically possible if Menu state changes between
+            # the isEnabled() call and the MenuSelect call
+            zombie_check = 0
             time.sleep(1.0)
         except pywinauto.findwindows.WindowNotFoundError:
             # this can happen in a few different cases.  Have seen this exception
             # when TSSB is still actually running so cannot blindly assume we are
             # done.  Have also see us get here because calls to File->Exit actually
             # did work but we still have a tssb64.exe process running.
-            if not 'tssb64.exe' in get_process_list():
-                # if window not found and process not running then we should be
-                # ok to exit.
-                break
+            zombie_check = zombie_check + 1
+            print 'zombie_check increment to %d for window not found' % zombie_check
             time.sleep(1.0)
+        except TSSBException:
+            # we threw this so simply re-raise
+            raise
         except:
-            # this is an exception we don't expect.  Print it for debugging, 
-            # but sleep and try again 
-            tb = traceback.format_exc()
-            print tb
+            # pywin auto occasionally throws weird exceptions - treat this as "normal"
+            # and continue
+            # ...if need to see exception for debugging
+            # tb = traceback.format_exc()
+            # print tb
             time.sleep(1.0) 
     
 if __name__ == '__main__':
