@@ -10,7 +10,7 @@ import testutil
 import pywinauto
 
 def tssbtest_path(fname):
-    return '%s/tssb/%s' % (os.path.dirname(__file__),fname)
+    return '%s/%s/tssb/%s' % (os.getcwd(),os.path.dirname(__file__),fname)
     
 class Test(unittest.TestCase):
 
@@ -33,7 +33,7 @@ class Test(unittest.TestCase):
     def testSuccess(self):
         script = tssbtest_path('simple.txt')
         script = script.replace('/','\\')
-        run_tssb(script,tssb_path='C:\\Users\\bwilkinson.Calpont\\TSSB\\tssb64.exe')
+        run_tssb(script)
         
         ref = tssbtest_path('ref_audit.log')
         targ = tssbtest_path('AUDIT.LOG')
@@ -43,25 +43,25 @@ class Test(unittest.TestCase):
         script = tssbtest_path('simple.txt')
         script = script.replace('/','\\')
         with self.assertRaises(pywinauto.application.AppStartError):
-            run_tssb(script)
+            run_tssb(script,tssb_path='NOT_A_PATH\\tssb64.exe')
 
     def testScriptNotFound(self):
         script = tssbtest_path('foobar')
         script = script.replace('/','\\')
         with self.assertRaisesRegexp(Exception,'TSSB could not find script file'):
-            run_tssb(script,tssb_path='C:\\Users\\bwilkinson.Calpont\\TSSB\\tssb64.exe')
+            run_tssb(script)
 
     def testSyntaxError(self):
         script = tssbtest_path('error.txt')
         script = script.replace('/','\\')
         with self.assertRaisesRegexp(Exception,'TSSB found a syntax error in'):
-            run_tssb(script,tssb_path='C:\\Users\\bwilkinson.Calpont\\TSSB\\tssb64.exe')
+            run_tssb(script)
 
     def testOtherError(self):
         script = tssbtest_path('error2.txt')
         script = script.replace('/','\\')
         with self.assertRaisesRegexp(Exception,'TSSB found errors in'):
-            run_tssb(script,tssb_path='C:\\Users\\bwilkinson.Calpont\\TSSB\\tssb64.exe')
+            run_tssb(script)
         
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
