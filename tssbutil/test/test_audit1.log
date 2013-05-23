@@ -1015,3 +1015,5 @@ Variables selected...
      FTICRAT100     3.33
      IMORLET100     3.33
      LIN_ATR_50     3.33
+     
+COMMAND ---> WRITE DATABASE "the.DB" ;     

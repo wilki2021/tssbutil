@@ -50,6 +50,7 @@ class VarParser(object):
         '''
         self._fname = filename
         self._vars = {}
+        self._varlist = []
         self.__parse()
         
     def __parse(self):
@@ -71,9 +72,13 @@ class VarParser(object):
                 varname = parts[0].strip()
                 vardefn = parts[1].strip()
                 self._vars[varname] = vardefn
+                self._varlist.append(varname)
                 
     def vars(self):
         return self._vars
+    
+    def varlist(self):
+        return self._varlist
     
 if __name__ == '__main__':
     '''

@@ -26,6 +26,8 @@ class Test(unittest.TestCase):
         self.assertEqual(len(vars_),74)
         self.assertEqual(vars_['PRSKEW'],'PRICE SKEWNESS 50 2')
         self.assertEqual(vars_['FTI100'],'FTI FTI 100 26 50')
+        self.assertEqual(parser.varlist()[0],'FTI100')
+        self.assertEqual(parser.varlist()[-1],'PRSKEW')
 
 
 if __name__ == "__main__":

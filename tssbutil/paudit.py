@@ -296,14 +296,20 @@ class AuditParser(object):
         # before we start collecting variable names
         line = self.__get_line()
         while line != None and not self._termpatt.match(line):
+            #print 'line=%d,parse_selstats,state=%d,line=%s' % (self._lineno,pstate,line)
             if pstate == 0 and patt1.match(line):
                 pstate = 1
             elif pstate == 1 and patt2.match(line):
                 pstate = 2
-            elif pstate == 2:
+            elif pstate == 2 and len(line):
+                pstate = 3
+                
+            if pstate == 3:
                 if line:
                     (variable, pct) = line.split()[0], line.split()[1]
                     self._tssbrun.selection_stats().add_model_variable(mat.group(1), variable, float(pct))
+                else:
+                    return
             line = self.__get_line()
         
     def __push_back(self, line):
