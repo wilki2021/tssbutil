@@ -10,7 +10,7 @@ import testutil
 import pywinauto
 
 def tssbtest_path(fname):
-    return '%s/%s/tssb/%s' % (os.getcwd(),os.path.dirname(__file__),fname)
+    return '%s/tssb/%s' % (os.path.dirname(__file__),fname)
     
 class Test(unittest.TestCase):
 
