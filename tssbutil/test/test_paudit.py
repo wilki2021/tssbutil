@@ -41,8 +41,8 @@ class Test(unittest.TestCase):
         self.assertEqual(comm6.roc_area, 0.24178)
         self.assertEqual(comm6.long_profit_fac, 0.531)
         self.assertEqual(comm6.long_only_imp, 0.560)
-        self.assertTrue(math.isnan(comm6.short_profit_fac))
-        self.assertTrue(math.isnan(comm6.short_only_imp))
+        self.assertEqual(comm6.short_profit_fac,1.0)
+        self.assertEqual(comm6.short_only_imp,1.0)
         self.assertEqual(comm6.long_total_ret, -1.46)
         self.assertEqual(comm6.long_maxdd, 2.59)
         self.assertEqual(comm6.short_total_ret, 0.0)
@@ -164,6 +164,23 @@ class Test(unittest.TestCase):
         outsamp = f4.oosample_stats()
         self.assertEqual(outsamp.num_below_low,5)
         self.assertEqual(outsamp.mean_below_low,0.06147)
+
+    def testAudit4(self):
+        # reuse audit1.log again, but now look for walk-forward folds
+
+        tlog = '%s/test_audit4.log' % os.path.dirname(__file__)
+        aud = AuditParser(tlog)
+
+        tssbrun = aud.tssbrun()
+        self.assertEqual(len(tssbrun.folds()), 1)
+
+        wfmstats = aud.tssbrun().walkforward_summ()
+        self.assertEqual(len(wfmstats), 5)
+        self.assertTrue(wfmstats.has_key('FILTLONG5'))
+
+        long5 = wfmstats['FILTLONG5']
+        self.assertEqual(long5.long_profit_fac, 1.336)
+        self.assertEqual(long5.long_only_imp, 1.387)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

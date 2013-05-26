@@ -164,7 +164,7 @@ class AuditParser(object):
         pstate = 1
         line = self.__get_line()
         while line != None:
-            # print 'line=%d,parse_std_result,state=%d,line=%s' % (self._lineno,pstate,line)
+            #print 'line=%d,parse_std_result,state=%d,line=%s' % (self._lineno,pstate,line)
             if pstate == 1 and patt1.match(line):
                 # this means we are parsing a pooled out-of-sample section.  We parse the
                 # next 3 rows that must contain the target grand mean and then above 
@@ -174,14 +174,14 @@ class AuditParser(object):
                 assert( mat1.group(3) == 'above outer high')
                 wfmstats.num_above_high = int(mat1.group(1))
                 wfmstats.total_cases = int(mat1.group(2))
-                if wfmstats.num_above_high > 0:
+                if wfmstats.num_above_high > 0 and wfmstats.num_above_high < wfmstats.total_cases:
                     mat2 = patt4.match(mat1.group(4)) 
                     wfmstats.mean_above_high = float(mat2.group(1))
                 
                 mat1 = patt3a.match(self.__get_line())
                 assert( mat1.group(3) == 'below outer low')
                 wfmstats.num_below_low = int(mat1.group(1))
-                if wfmstats.num_below_low > 0:
+                if wfmstats.num_below_low > 0 and wfmstats.num_below_low < wfmstats.total_cases:
                     mat2 = patt4.match(mat1.group(4)) 
                     wfmstats.mean_below_low = float(mat2.group(1))
 
@@ -218,11 +218,16 @@ class AuditParser(object):
                 mat1 = patt6.match(line) 
                 assert(mat1.group(1) == 'long')
                 if mat1.group(2).find('is infinite') != -1:
-                    wfmstats.long_profit_fac = float('Inf')
-                    wfmstats.long_only_imp = float('Inf')
+                    # this happens when all the predictions are correct
+                    # won't be perfect, but assume the value as the number
+                    # correct predictions 
+                    wfmstats.long_profit_fac = float(wfmstats.num_above_high)
+                    wfmstats.long_only_imp = float(wfmstats.num_above_high)
                 elif mat1.group(2).find('is undefined') != -1:
-                    wfmstats.long_profit_fac = float('NaN')
-                    wfmstats.long_only_imp = float('NaN')
+                    # this happens where there are no predictions.  Reasonable
+                    # answer is to assign 1.0 since that is the nominal value
+                    wfmstats.long_profit_fac = 1.0
+                    wfmstats.long_only_imp = 1.0
                 else:
                     mat2 = patt6b.match(mat1.group(2))
                     wfmstats.long_profit_fac = float(mat2.group(1))
@@ -231,11 +236,13 @@ class AuditParser(object):
                 mat1 = patt6.match(self.__get_line()) 
                 assert(mat1.group(1) == 'short')
                 if mat1.group(2).find('is infinite') != -1:
-                    wfmstats.short_profit_fac = float('Inf')
-                    wfmstats.short_only_imp = float('Inf')
+                    # see comments above
+                    wfmstats.short_profit_fac = float(wfmstats.num_below_low)
+                    wfmstats.short_only_imp = float(wfmstats.num_below_low)
                 elif mat1.group(2).find('is undefined') != -1:
-                    wfmstats.short_profit_fac = float('NaN')
-                    wfmstats.short_only_imp = float('NaN')
+                    # see comments above
+                    wfmstats.short_profit_fac = 1.0
+                    wfmstats.short_only_imp = 1.0
                 else:
                     mat2 = patt6b.match(mat1.group(2))
                     wfmstats.short_profit_fac = float(mat2.group(1))

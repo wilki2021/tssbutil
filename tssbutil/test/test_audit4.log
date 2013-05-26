@@ -1,0 +1,983 @@
+BOOSTER audit log (C:\Users\bwilkinson.CALPONT\TSSB\futures-9\test-26\2011\AUDIT.LOG)
+
+COMMAND ---> RETAIN YEARS 1998 THROUGH 2012 ; 
+
+COMMAND ---> RETAIN MARKET LIST "..\..\ALL_SYMBOLS.TXT" ; 
+User specified 35 retained markets.
+CT2 LB RR2 S2 SB2 W2 GBL GBS LLG BAX TU2 TY2 ED LES LEU LSS HG2 RB2 CL2 HO2 NG2 
+GC2 PA2 SI2 AD BP EC JY SF CD FCE DAX ND NK SP 
+
+COMMAND ---> READ DATABASE "vardb.DAT" "vardb.FAM" ; 
+
+Found 12 variables in input file VARDB.DAT
+
+123735 cases read
+
+COMMAND ---> APPEND DATABASE "..\..\tssb_short.csv" ; 
+
+Now have 16 variables (4 new) after appending ..\..\TSSB_SHORT.CSV
+
+Database had 123735 cases, 1221 cases read, final count=757
+
+COMMAND ---> REALPROFIT IS PROFIT ; 
+
+COMMAND ---> OUTLIER SCAN ; 
+
+
+-------------------------------
+Outlier / Entropy scan
+-------------------------------
+
+       Variable     Min      Mkt     Max      Mkt   IQ Range   Ratio  Entropy
+         RSI_99    36.531     AD    56.385    BAX     4.040      4.9    0.742
+          PPV50   -49.994    BAX    48.561    LES    19.196      5.1    0.770
+      STO_K_100     1.880    NG2    48.192    FCE     9.147      5.1    0.695
+    RDMORLET100   -35.878    GC2    39.595    LES    12.803      5.9    0.696
+      STO_D_100     3.417    PA2    57.372     AD    12.186      4.4    0.750
+         PPV100   -49.791    BAX    49.549    LES    22.705      4.4    0.800
+       DINT_100   -49.291    PA2    41.156     LB    27.687      3.3    0.901
+       CMMA_100   -48.978    PA2    -5.073    HG2    11.511      3.8    0.867
+    IDMORLET100   -40.617    SI2    29.131    SB2    13.547      5.1    0.758
+         OBV100   -48.654    RR2    40.867     SP    23.004      3.9    0.836
+  DREACT_50_100   -47.272    PA2    35.548     W2    19.715      4.2    0.865
+       PVR_50_4   -45.480    BAX    49.529    DAX    43.950      2.2    0.990
+      CONTRACTS  -400.000    LSS    -1.000     ND    50.000      8.0    0.407
+         POINTS -2115.000     NK   905.000     NK     5.092    593.1    0.157
+   SCALEDPROFIT    -6.232     ND    19.792    NG2     1.478     17.6    0.415
+     REALPROFIT    -0.991    CT2     5.048    CT2     0.787      7.7    0.468
+
+Sorted by ratio, worst to best
+
+       Variable     Ratio  Entropy
+         POINTS    593.1    0.157
+   SCALEDPROFIT     17.6    0.415
+      CONTRACTS      8.0    0.407
+     REALPROFIT      7.7    0.468
+    RDMORLET100      5.9    0.696
+    IDMORLET100      5.1    0.758
+          PPV50      5.1    0.770
+      STO_K_100      5.1    0.695
+         RSI_99      4.9    0.742
+      STO_D_100      4.4    0.750
+         PPV100      4.4    0.800
+  DREACT_50_100      4.2    0.865
+         OBV100      3.9    0.836
+       CMMA_100      3.8    0.867
+       DINT_100      3.3    0.901
+       PVR_50_4      2.2    0.990
+
+Sorted by entropy, worst to best
+
+       Variable     Ratio  Entropy
+         POINTS    593.1    0.157
+      CONTRACTS      8.0    0.407
+   SCALEDPROFIT     17.6    0.415
+     REALPROFIT      7.7    0.468
+      STO_K_100      5.1    0.695
+    RDMORLET100      5.9    0.696
+         RSI_99      4.9    0.742
+      STO_D_100      4.4    0.750
+    IDMORLET100      5.1    0.758
+          PPV50      5.1    0.770
+         PPV100      4.4    0.800
+         OBV100      3.9    0.836
+  DREACT_50_100      4.2    0.865
+       CMMA_100      3.8    0.867
+       DINT_100      3.3    0.901
+       PVR_50_4      2.2    0.990
+
+COMMAND ---> MODEL FILTLONG1 IS LINREG [ 
+                INPUT = [  STO_K_100 STO_D_100 CMMA_100 ] 
+                OUTPUT = REALPROFIT 
+                MAX STEPWISE = 0 
+                STEPWISE RETENTION = 10 
+                CRITERION = LONG PROFIT FACTOR 
+                MIN CRITERION FRACTION = 0.3 
+                SHOW SELECTION COUNT 
+             ] ; 
+
+COMMAND ---> MODEL FILTLONG2 IS LINREG [ 
+                INPUT = [  PPV100 DINT_100 ] 
+                OUTPUT = REALPROFIT 
+                MAX STEPWISE = 0 
+                STEPWISE RETENTION = 10 
+                CRITERION = LONG PROFIT FACTOR 
+                MIN CRITERION FRACTION = 0.3 
+                SHOW SELECTION COUNT 
+             ] ; 
+
+COMMAND ---> MODEL FILTLONG3 IS LINREG [ 
+                INPUT = [  PPV50 OBV100 DREACT_50_100 ] 
+                OUTPUT = REALPROFIT 
+                MAX STEPWISE = 0 
+                STEPWISE RETENTION = 10 
+                CRITERION = LONG PROFIT FACTOR 
+                MIN CRITERION FRACTION = 0.3 
+                SHOW SELECTION COUNT 
+             ] ; 
+
+COMMAND ---> MODEL FILTLONG4 IS LINREG [ 
+                INPUT = [  RDMORLET100 PVR_50_4 ] 
+                OUTPUT = REALPROFIT 
+                MAX STEPWISE = 0 
+                STEPWISE RETENTION = 10 
+                CRITERION = LONG PROFIT FACTOR 
+                MIN CRITERION FRACTION = 0.3 
+                SHOW SELECTION COUNT 
+             ] ; 
+
+COMMAND ---> MODEL FILTLONG5 IS LINREG [ 
+                INPUT = [  IDMORLET100 ] 
+                OUTPUT = REALPROFIT 
+                MAX STEPWISE = 0 
+                STEPWISE RETENTION = 10 
+                CRITERION = LONG PROFIT FACTOR 
+                MIN CRITERION FRACTION = 0.3 
+                SHOW SELECTION COUNT 
+             ] ; 
+
+COMMAND ---> WALK FORWARD BY year 10 2012 ; 
+
+Beginning walk forward by year
+
+
+--------------------------------------------------------------
+Walkforward test date 2012 training 476 cases, testing 35
+--------------------------------------------------------------
+
+Model FILTLONG1...
+
+LINREG Model FILTLONG1 predicting REALPROFIT
+Stepwise not used; all predictors available to model
+Regression coefficients:
+         -0.053048  STO_K_100
+          0.035201  STO_D_100
+          0.005228  CMMA_100
+          0.195176  CONSTANT
+
+Target grand mean = 0.01782
+Outer hi thresh = 0.08294  with 160 of 476 cases at or above (33.61 %)  Mean = 0.16699 versus -0.05771
+Outer lo thresh = -0.02407  with 143 of 476 cases at or below (30.04 %)  Mean = -0.13001 versus 0.08130
+
+Target statistics at various percentages kept...
+Statistic                    10           25           50           75           90
+
+Mean target above         0.1961       0.1650       0.1434       0.0625       0.0511
+N wins above                  25           58          118          156          186
+Mean win above            0.5973       0.6954       0.6326       0.6128       0.6063
+Total win above             14.9         40.3         74.6         95.6        112.8
+N losses above                22           61          120          201          243
+Mean loss above           0.2599       0.3393       0.3377       0.3646       0.3738
+Total loss above             5.7         20.7         40.5         73.3         90.8
+Profit factor above       2.6113       1.9485       1.8419       1.3044       1.2416
+
+Mean target below        -0.2864      -0.1162      -0.1077      -0.0312      -0.0017
+N wins below                  38           80          161          220          259
+Mean win below            0.4617       0.4385       0.4214       0.3985       0.3963
+Total win below             17.5         35.1         67.8         87.7        102.6
+N losses below                 9           39           77          137          170
+Mean loss below           0.4539       0.5448       0.5481       0.5585       0.5995
+Total loss below             4.1         21.2         42.2         76.5        101.9
+Profit factor below       4.2952       1.6510       1.6074       1.1457       1.0072
+
+MSE = 0.37323   R-squared = 0.04095   ROC area = 0.65100
+Buy-and-hold profit factor = 1.078   Sell-short-and-hold = 0.927
+Dual-thresholded outer PF = 1.895
+   Outer long-only PF = 2.001   Improvement Ratio = 1.855
+   Outer short-only PF = 1.778  Improvement Ratio = 1.917
+
+
+Trade statistics above and below the upper (long) and lower (short) thresholds
+
+                     Above          Below          Above          Below
+                     Upper          Upper          Lower          Lower
+
+N of trades            160            316            333            143
+N of winners            80            115            185             96
+Percent winners       50.0           36.4           55.6           67.1
+N of losers             80            201            148             47
+Percent losers        50.0           63.6           44.4           32.9
+Mean profit         0.1670        -0.0577        -0.0813         0.1300
+Total profit         26.72         -18.24         -27.07          18.59
+Max profit           2.494          2.653          0.764          0.761
+Min profit          -0.764         -0.761         -2.494         -2.653
+Profit factor        2.001          0.777          0.709          1.778
+Mean win            0.6678         0.5515         0.3561         0.4426
+Mean lose           0.3338         0.4063         0.6281         0.5085
+
+Out-of-sample results...
+
+Target grand mean = -0.00920
+Outer hi thresh = 0.08294  with 11 of 35 cases at or above (31.43 %)  Mean = -0.18079 versus 0.06944
+Outer lo thresh = -0.02407  with 13 of 35 cases at or below (37.14 %)  Mean = -0.07786 versus 0.03137
+
+Target statistics at various percentages kept...
+Statistic                    10           25           50           75           90
+
+Mean target above        -0.2585      -0.1962      -0.1614       0.0133      -0.0123
+N wins above                   1            2            5            8            9
+Mean win above            0.2352       0.4984       0.4701       0.9334       0.8359
+Total win above              0.2          1.0          2.4          7.5          7.5
+N losses above                 2            7           13           19           23
+Mean loss above           0.5053       0.3947       0.4042       0.3740       0.3442
+Total loss above             1.0          2.8          5.3          7.1          7.9
+Profit factor above       0.2327       0.3608       0.4473       1.0507       0.9503
+
+Mean target below         0.0239      -0.1146       0.1802       0.0817       0.0142
+N wins below                   2            7           12           18           23
+Mean win below            0.4768       0.3019       0.3013       0.3393       0.3417
+Total win below              1.0          2.1          3.6          6.1          7.9
+N losses below                 1            2            6            9            9
+Mean loss below           1.0251       0.5408       1.1430       0.9237       0.9237
+Total loss below             1.0          1.1          6.9          8.3          8.3
+Profit factor below       0.9302       1.9538       0.5272       0.7347       0.9455
+
+MSE = 0.59720   R-squared = -0.05861   ROC area = 0.40110
+Buy-and-hold profit factor = 0.964   Sell-short-and-hold = 1.038
+Dual-thresholded outer PF = 0.820
+   Outer long-only PF = 0.366   Improvement Ratio = 0.380
+   Outer short-only PF = 1.441  Improvement Ratio = 1.388
+
+
+Trade statistics above and below the upper (long) and lower (short) thresholds
+
+                     Above          Below          Above          Below
+                     Upper          Upper          Lower          Lower
+
+N of trades             11             24             22             13
+N of winners             3              7             15             10
+Percent winners       27.3           29.2           68.2           76.9
+N of losers              8             17              7              3
+Percent losers        72.7           70.8           31.8           23.1
+Mean profit        -0.1808         0.0694        -0.0314         0.0779
+Total profit         -1.99           1.67          -0.69           1.01
+Max profit           0.762          3.416          0.597          0.623
+Min profit          -0.574         -0.623         -3.416         -1.215
+Profit factor        0.366          1.291          0.890          1.441
+Mean win            0.3824         1.0573         0.3708         0.3309
+Mean lose           0.3920         0.3373         0.8931         0.7656
+
+Model FILTLONG2...
+
+LINREG Model FILTLONG2 predicting REALPROFIT
+Stepwise not used; all predictors available to model
+Regression coefficients:
+          0.004534  PPV100
+         -0.004073  DINT_100
+          0.030722  CONSTANT
+
+Target grand mean = 0.01782
+Outer hi thresh = 0.05899  with 153 of 476 cases at or above (32.14 %)  Mean = 0.15221 versus -0.04584
+Outer lo thresh = -0.02107  with 156 of 476 cases at or below (32.77 %)  Mean = -0.10094 versus 0.07571
+
+Target statistics at various percentages kept...
+Statistic                    10           25           50           75           90
+
+Mean target above         0.1744       0.1512       0.0998       0.0466       0.0337
+N wins above                  24           59          115          154          182
+Mean win above            0.7298       0.6816       0.6148       0.6176       0.6034
+Total win above             17.5         40.2         70.7         95.1        109.8
+N losses above                23           60          123          203          247
+Mean loss above           0.4050       0.3703       0.3816       0.3867       0.3861
+Total loss above             9.3         22.2         46.9         78.5         95.4
+Profit factor above       1.8801       1.8100       1.5061       1.2117       1.1515
+
+Mean target below        -0.1270      -0.0684      -0.0642      -0.0267       0.0007
+N wins below                  34           78          158          221          258
+Mean win below            0.3822       0.3830       0.3888       0.3898       0.3839
+Total win below             13.0         29.9         61.4         86.2         99.1
+N losses below                13           41           80          136          171
+Mean loss below           0.5406       0.5302       0.5769       0.5635       0.5809
+Total loss below             7.0         21.7         46.2         76.6         99.3
+Profit factor below       1.8491       1.3744       1.3310       1.1241       0.9972
+
+MSE = 0.38183   R-squared = 0.01885   ROC area = 0.60756
+Buy-and-hold profit factor = 1.078   Sell-short-and-hold = 0.927
+Dual-thresholded outer PF = 1.738
+   Outer long-only PF = 1.890   Improvement Ratio = 1.753
+   Outer short-only PF = 1.589  Improvement Ratio = 1.714
+
+
+Trade statistics above and below the upper (long) and lower (short) thresholds
+
+                     Above          Below          Above          Below
+                     Upper          Upper          Lower          Lower
+
+N of trades            153            323            320            156
+N of winners            79            116            174            107
+Percent winners       51.6           35.9           54.4           68.6
+N of losers             74            207            146             49
+Percent losers        48.4           64.1           45.6           31.4
+Mean profit         0.1522        -0.0458        -0.0757         0.1009
+Total profit         23.29         -14.81         -24.23          15.75
+Max profit           2.653          2.494          0.764          0.720
+Min profit          -0.705         -0.764         -2.653         -2.078
+Profit factor        1.890          0.820          0.731          1.589
+Mean win            0.6258         0.5811         0.3788         0.3969
+Mean lose           0.3534         0.3972         0.6173         0.5453
+
+Out-of-sample results...
+
+Target grand mean = -0.00920
+Outer hi thresh = 0.05899  with 11 of 35 cases at or above (31.43 %)  Mean = -0.17849 versus 0.06839
+Outer lo thresh = -0.02107  with 11 of 35 cases at or below (31.43 %)  Mean = 0.19069 versus -0.10082
+
+Target statistics at various percentages kept...
+Statistic                    10           25           50           75           90
+
+Mean target above        -0.0938      -0.1377      -0.0358      -0.1380      -0.0989
+N wins above                   1            3            6            7            9
+Mean win above            0.2352       0.4795       0.6940       0.6164       0.5703
+Total win above              0.2          1.4          4.2          4.3          5.1
+N losses above                 2            6           12           20           23
+Mean loss above           0.2583       0.4464       0.4007       0.4020       0.3607
+Total loss above             0.5          2.7          4.8          8.0          8.3
+Profit factor above       0.4553       0.5372       0.8659       0.5366       0.6187
+
+Mean target below         0.9473       0.3090       0.0749       0.0123      -0.0013
+N wins below                   2            6           13           20           23
+Mean win below            0.2869       0.2421       0.3124       0.3389       0.3632
+Total win below              0.6          1.5          4.1          6.8          8.4
+N losses below                 1            3            5            7            9
+Mean loss below           3.4156       1.4113       1.0819       1.0157       0.9237
+Total loss below             3.4          4.2          5.4          7.1          8.3
+Profit factor below       0.1680       0.3431       0.7509       0.9533       1.0049
+
+MSE = 0.59233   R-squared = -0.04998   ROC area = 0.32412
+Buy-and-hold profit factor = 0.964   Sell-short-and-hold = 1.038
+Dual-thresholded outer PF = 0.468
+   Outer long-only PF = 0.423   Improvement Ratio = 0.439
+   Outer short-only PF = 0.505  Improvement Ratio = 0.486
+
+
+Trade statistics above and below the upper (long) and lower (short) thresholds
+
+                     Above          Below          Above          Below
+                     Upper          Upper          Lower          Lower
+
+N of trades             11             24             24             11
+N of winners             3              7             17              8
+Percent winners       27.3           29.2           70.8           72.7
+N of losers              8             17              7              3
+Percent losers        72.7           70.8           29.2           27.3
+Mean profit        -0.1785         0.0684         0.1008        -0.1907
+Total profit         -1.96           1.64           2.42          -2.10
+Max profit           0.660          3.416          0.597          0.623
+Min profit          -0.597         -0.623         -1.215         -3.416
+Profit factor        0.423          1.300          1.561          0.505
+Mean win            0.4795         1.0157         0.3961         0.2670
+Mean lose           0.4252         0.3217         0.6164         1.4113
+
+Model FILTLONG3...
+
+LINREG Model FILTLONG3 predicting REALPROFIT
+Stepwise not used; all predictors available to model
+Regression coefficients:
+          0.007167  PPV50
+         -0.002266  OBV100
+         -0.003838  DREACT_50_100
+          0.058320  CONSTANT
+
+Target grand mean = 0.01782
+Outer hi thresh = 0.03565  with 198 of 476 cases at or above (41.60 %)  Mean = 0.12501 versus -0.05853
+Outer lo thresh = -0.03632  with 143 of 476 cases at or below (30.04 %)  Mean = -0.17020 versus 0.09856
+
+Target statistics at various percentages kept...
+Statistic                    10           25           50           75           90
+
+Mean target above         0.1463       0.1387       0.0824       0.0970       0.0375
+N wins above                  24           60          112          167          182
+Mean win above            0.7077       0.6547       0.6136       0.6377       0.6082
+Total win above             17.0         39.3         68.7        106.5        110.7
+N losses above                23           59          126          190          247
+Mean loss above           0.4396       0.3862       0.3898       0.3783       0.3830
+Total loss above            10.1         22.8         49.1         71.9         94.6
+Profit factor above       1.6801       1.7242       1.3991       1.4819       1.1702
+
+Mean target below        -0.1620      -0.2198      -0.0467      -0.0225       0.0037
+N wins below                  34           91          155          222          258
+Mean win below            0.4053       0.4011       0.3823       0.3855       0.3808
+Total win below             13.8         36.5         59.3         85.6         98.3
+N losses below                13           28           83          135          171
+Mean loss below           0.4743       0.3696       0.5799       0.5746       0.5840
+Total loss below             6.2         10.3         48.1         77.6         99.9
+Profit factor below       2.2349       3.5269       1.2311       1.1034       0.9839
+
+MSE = 0.37868   R-squared = 0.02696   ROC area = 0.62648
+Buy-and-hold profit factor = 1.078   Sell-short-and-hold = 0.927
+Dual-thresholded outer PF = 1.876
+   Outer long-only PF = 1.652   Improvement Ratio = 1.532
+   Outer short-only PF = 2.346  Improvement Ratio = 2.529
+
+
+Trade statistics above and below the upper (long) and lower (short) thresholds
+
+                     Above          Below          Above          Below
+                     Upper          Upper          Lower          Lower
+
+N of trades            198            278            333            143
+N of winners            99             96            173            108
+Percent winners       50.0           34.5           52.0           75.5
+N of losers             99            182            160             35
+Percent losers        50.0           65.5           48.0           24.5
+Mean profit         0.1250        -0.0585        -0.0986         0.1702
+Total profit         24.75         -16.27         -32.82          24.34
+Max profit           2.653          2.298          0.764          0.720
+Min profit          -0.764         -0.761         -2.653         -2.078
+Profit factor        1.652          0.769          0.668          2.346
+Mean win            0.6334         0.5640         0.3812         0.3928
+Mean lose           0.3834         0.3869         0.6173         0.5167
+
+Out-of-sample results...
+
+Target grand mean = -0.00920
+Outer hi thresh = 0.03565  with 15 of 35 cases at or above (42.86 %)  Mean = -0.12218 versus 0.07553
+Outer lo thresh = -0.03632  with 0 of 35 cases at or below (0.00 %)
+
+Target statistics at various percentages kept...
+Statistic                    10           25           50           75           90
+
+Mean target above        -0.1160      -0.0732       0.0500       0.0152       0.0182
+N wins above                   1            3            6            8           10
+Mean win above            0.2352       0.6402       1.0050       0.9663       0.8549
+Total win above              0.2          1.9          6.0          7.7          8.5
+N losses above                 2            6           12           19           22
+Mean loss above           0.2917       0.4299       0.4275       0.3852       0.3621
+Total loss above             0.6          2.6          5.1          7.3          8.0
+Profit factor above       0.4032       0.7447       1.1753       1.0561       1.0732
+
+Mean target below        -0.3018      -0.0946       0.1219       0.0369       0.0008
+N wins below                   3            7           13           19           23
+Mean win below            0.3018       0.2385       0.2877       0.3311       0.3603
+Total win below              0.9          1.7          3.7          6.3          8.3
+N losses below                 0            2            5            8            9
+Mean loss below           0.0000       0.4092       1.1869       0.9110       0.9237
+Total loss below             0.0          0.8          5.9          7.3          8.3
+Profit factor below          Inf       2.0401       0.6302       0.8632       0.9969
+
+MSE = 0.56951   R-squared = -0.00953   ROC area = 0.47489
+Buy-and-hold profit factor = 0.964   Sell-short-and-hold = 1.038
+Dual-thresholded outer PF = 0.588
+   Outer long-only PF = 0.588   Improvement Ratio = 0.610
+   Outer short-only PF is undefined (no cases)
+
+
+Trade statistics above and below the upper (long) and lower (short) thresholds
+
+                     Above          Below          Above          Below
+                     Upper          Upper          Lower          Lower
+
+N of trades             15             20             35              0
+N of winners             5              5             25              0
+Percent winners       33.3           25.0           71.4            0.0
+N of losers             10             15             10              0
+Percent losers        66.7           75.0           28.6            0.0
+Mean profit        -0.1222         0.0755         0.0092        -0.0000
+Total profit         -1.83           1.51           0.32           0.00
+Max profit           1.025          3.416          0.623         -0.000
+Min profit          -0.586         -0.623         -3.416         -0.000
+Profit factor        0.588          1.341          1.038          1.000
+Mean win            0.5228         1.1869         0.3548         1.0000
+Mean lose           0.4447         0.2949         0.8549         1.0000
+
+Model FILTLONG4...
+
+LINREG Model FILTLONG4 predicting REALPROFIT
+Stepwise not used; all predictors available to model
+Regression coefficients:
+          0.005002  RDMORLET100
+          0.000049  PVR_50_4
+          0.011588  CONSTANT
+
+Target grand mean = 0.01782
+Outer hi thresh = 0.04182  with 142 of 476 cases at or above (29.83 %)  Mean = 0.10203 versus -0.01798
+Outer lo thresh = -0.00030  with 167 of 476 cases at or below (35.08 %)  Mean = -0.08323 versus 0.07243
+
+Target statistics at various percentages kept...
+Statistic                    10           25           50           75           90
+
+Mean target above         0.1134       0.1053       0.0522       0.0578       0.0281
+N wins above                  18           52           94          148          177
+Mean win above            0.7884       0.6810       0.6920       0.6645       0.6138
+Total win above             14.2         35.4         65.0         98.4        108.6
+N losses above                29           67          144          209          252
+Mean loss above           0.3056       0.3416       0.3654       0.3718       0.3833
+Total loss above             8.9         22.9         52.6         77.7         96.6
+Profit factor above       1.6012       1.5472       1.2361       1.2657       1.1247
+
+Mean target below        -0.0757      -0.1022      -0.0166      -0.0113       0.0073
+N wins below                  29           72          137          214          252
+Mean win below            0.4060       0.4259       0.4069       0.3994       0.3949
+Total win below             11.8         30.7         55.7         85.5         99.5
+N losses below                18           47          101          143          177
+Mean loss below           0.4563       0.3936       0.5129       0.5695       0.5800
+Total loss below             8.2         18.5         51.8         81.4        102.7
+Profit factor below       1.4334       1.6578       1.0761       1.0497       0.9693
+
+MSE = 0.38633   R-squared = 0.00728   ROC area = 0.57082
+Buy-and-hold profit factor = 1.078   Sell-short-and-hold = 0.927
+Dual-thresholded outer PF = 1.510
+   Outer long-only PF = 1.502   Improvement Ratio = 1.393
+   Outer short-only PF = 1.518  Improvement Ratio = 1.637
+
+
+Trade statistics above and below the upper (long) and lower (short) thresholds
+
+                     Above          Below          Above          Below
+                     Upper          Upper          Lower          Lower
+
+N of trades            142            334            309            167
+N of winners            60            135            181            100
+Percent winners       42.3           40.4           58.6           59.9
+N of losers             82            199            128             67
+Percent losers        57.7           59.6           41.4           40.1
+Mean profit         0.1020        -0.0180        -0.0724         0.0832
+Total profit         14.49          -6.01         -22.38          13.90
+Max profit           2.653          2.494          0.720          0.764
+Min profit          -0.705         -0.764         -2.653         -1.476
+Profit factor        1.502          0.924          0.751          1.518
+Mean win            0.7223         0.5445         0.3737         0.4073
+Mean lose           0.3519         0.3996         0.7033         0.4004
+
+Out-of-sample results...
+
+Target grand mean = -0.00920
+Outer hi thresh = 0.04182  with 8 of 35 cases at or above (22.86 %)  Mean = 0.52447 versus -0.16733
+Outer lo thresh = -0.00030  with 12 of 35 cases at or below (34.29 %)  Mean = -0.24039 versus 0.11142
+
+Target statistics at various percentages kept...
+Statistic                    10           25           50           75           90
+
+Mean target above         0.4450       0.6012       0.0960       0.0674       0.0196
+N wins above                   2            5            5           10           10
+Mean win above            0.8427       1.3718       1.3718       0.8549       0.8549
+Total win above              1.7          6.9          6.9          8.5          8.5
+N losses above                 1            4           13           17           22
+Mean loss above           0.3506       0.3621       0.3947       0.3959       0.3600
+Total loss above             0.4          1.4          5.1          6.7          7.9
+Profit factor above       4.8076       4.7359       1.3369       1.2703       1.0794
+
+Mean target below        -0.3169      -0.2798      -0.1347      -0.1673      -0.0518
+N wins below                   3            9           13           21           24
+Mean win below            0.3169       0.2798       0.3164       0.3534       0.3550
+Total win below              1.0          2.5          4.1          7.4          8.5
+N losses below                 0            0            5            6            8
+Mean loss below           0.0000       0.0000       0.3379       0.4841       0.8579
+Total loss below             0.0          0.0          1.7          2.9          6.9
+Profit factor below          Inf          Inf       2.4346       2.5555       1.2414
+
+MSE = 0.53817   R-squared = 0.04603   ROC area = 0.82289
+Buy-and-hold profit factor = 0.964   Sell-short-and-hold = 1.038
+Dual-thresholded outer PF = 5.277
+   Outer long-only PF = 3.897   Improvement Ratio = 4.044
+   Outer short-only PF = 14.933  Improvement Ratio = 14.391
+
+
+Trade statistics above and below the upper (long) and lower (short) thresholds
+
+                     Above          Below          Above          Below
+                     Upper          Upper          Lower          Lower
+
+N of trades              8             27             23             12
+N of winners             4              6             15             10
+Percent winners       50.0           22.2           65.2           83.3
+N of losers              4             21              8              2
+Percent losers        50.0           77.8           34.8           16.7
+Mean profit         0.5245        -0.1673        -0.1114         0.2404
+Total profit          4.20          -4.52          -2.56           2.88
+Max profit           3.416          1.215          0.597          0.623
+Min profit          -0.459         -0.623         -3.416         -0.150
+Profit factor        3.897          0.391          0.693         14.933
+Mean win            1.4110         0.4841         0.3853         0.3092
+Mean lose           0.3621         0.3534         1.0427         0.1035
+
+Model FILTLONG5...
+
+LINREG Model FILTLONG5 predicting REALPROFIT
+Stepwise not used; all predictors available to model
+Regression coefficients:
+         -0.001009  IDMORLET100
+          0.016881  CONSTANT
+
+Target grand mean = 0.01782
+Outer hi thresh = 0.01019  with 369 of 476 cases at or above (77.52 %)  Mean = 0.03659 versus -0.04692
+Outer lo thresh = 0.02528  with 367 of 476 cases at or below (77.10 %)  Mean = -0.00398 versus 0.09122
+
+Target statistics at various percentages kept...
+Statistic                    10           25           50           75           90
+
+Mean target above        -0.0090       0.0530       0.0268       0.0309       0.0170
+N wins above                  19           49           98          147          172
+Mean win above            0.4628       0.6350       0.6025       0.6291       0.6198
+Total win above              8.8         31.1         59.0         92.5        106.6
+N losses above                28           70          140          210          257
+Mean loss above           0.3291       0.3544       0.3762       0.3878       0.3864
+Total loss above             9.2         24.8         52.7         81.4         99.3
+Profit factor above       0.9543       1.2541       1.1209       1.1356       1.0736
+
+Mean target below         0.0250      -0.0215       0.0089       0.0061       0.0208
+N wins below                  24           71          141          211          253
+Mean win below            0.3775       0.3793       0.3950       0.3960       0.3919
+Total win below              9.1         26.9         55.7         83.6         99.2
+N losses below                23           48           97          146          176
+Mean loss below           0.4451       0.5077       0.5960       0.5872       0.6140
+Total loss below            10.2         24.4         57.8         85.7        108.1
+Profit factor below       0.8851       1.1050       0.9635       0.9746       0.9176
+
+MSE = 0.38905   R-squared = 0.00029   ROC area = 0.50824
+Buy-and-hold profit factor = 1.078   Sell-short-and-hold = 0.927
+Dual-thresholded outer PF = 1.089
+   Outer long-only PF = 1.163   Improvement Ratio = 1.079
+   Outer short-only PF = 1.017  Improvement Ratio = 1.097
+
+
+Trade statistics above and below the upper (long) and lower (short) thresholds
+
+                     Above          Below          Above          Below
+                     Upper          Upper          Lower          Lower
+
+N of trades            369            107            109            367
+N of winners           155             40             61            220
+Percent winners       42.0           37.4           56.0           59.9
+N of losers            214             67             48            147
+Percent losers        58.0           62.6           44.0           40.1
+Mean profit         0.0366        -0.0469        -0.0912         0.0040
+Total profit         13.50          -5.02          -9.94           1.46
+Max profit           2.653          2.298          0.764          0.761
+Min profit          -0.764         -0.705         -2.179         -2.653
+Profit factor        1.163          0.804          0.675          1.017
+Mean win            0.6209         0.5152         0.3386         0.3987
+Mean lose           0.3866         0.3825         0.6374         0.5868
+
+Out-of-sample results...
+
+Target grand mean = -0.00920
+Outer hi thresh = 0.01019  with 16 of 35 cases at or above (45.71 %)  Mean = 0.08653 versus -0.08982
+Outer lo thresh = 0.02528  with 35 of 35 cases at or below (100.00 %)
+
+Target statistics at various percentages kept...
+Statistic                    10           25           50           75           90
+
+Mean target above         0.5273       0.3645       0.0465      -0.0275      -0.0055
+N wins above                   2            4            5            7            9
+Mean win above            0.8502       1.3378       1.1003       0.9723       0.8765
+Total win above              1.7          5.4          5.5          6.8          7.9
+N losses above                 1            5           13           20           23
+Mean loss above           0.1185       0.4142       0.3588       0.3774       0.3506
+Total loss above             0.1          2.1          4.7          7.5          8.1
+Profit factor above      14.3562       2.5841       1.1795       0.9018       0.9781
+
+Mean target below        -0.0486       0.0179      -0.0839      -0.1528      -0.0595
+N wins below                   2            6           13           21           24
+Mean win below            0.4031       0.2634       0.3505       0.3488       0.3647
+Total win below              0.8          1.6          4.6          7.3          8.8
+N losses below                 1            3            5            6            8
+Mean loss below           0.6604       0.5807       0.6094       0.5329       0.8560
+Total loss below             0.7          1.7          3.0          3.2          6.8
+Profit factor below       1.2208       0.9073       1.4956       2.2907       1.2781
+
+MSE = 0.56351   R-squared = 0.00112   ROC area = 0.63709
+Buy-and-hold profit factor = 0.964   Sell-short-and-hold = 1.038
+Dual-thresholded outer PF = 1.135
+   Outer long-only PF = 1.336   Improvement Ratio = 1.387
+   Outer short-only PF = 1.038  Improvement Ratio = 1.000
+
+
+Trade statistics above and below the upper (long) and lower (short) thresholds
+
+                     Above          Below          Above          Below
+                     Upper          Upper          Lower          Lower
+
+N of trades             16             19              0             35
+N of winners             5              5              0             25
+Percent winners       31.3           26.3            0.0           71.4
+N of losers             11             14              0             10
+Percent losers        68.8           73.7            0.0           28.6
+Mean profit         0.0865        -0.0898        -0.0000         0.0092
+Total profit          1.38          -1.71           0.00           0.32
+Max profit           3.416          1.025         -0.000          0.623
+Min profit          -0.623         -0.586         -0.000         -3.416
+Profit factor        1.336          0.641          1.000          1.038
+Mean win            1.1003         0.6094         1.0000         0.3548
+Mean lose           0.3743         0.3395         1.0000         0.8549
+
+
+**************************************************************
+*                                                            *
+*  Walkforward is complete.  Summary...                      *
+*                                                            *
+**************************************************************
+
+
+vvvvvvvvvvvvvvvvvvvvvvvvv
+
+Model FILTLONG1...
+
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Pooled out-of-sample...
+   Target grand mean = -0.00920
+      11 of 35 cases (31.43%) at or above outer high threshold  (Mean = -0.18079 versus 0.06944)
+      13 of 35 cases (37.14%) at or below outer low threshold  (Mean = -0.07786 versus 0.03137)
+MSE = 0.59720   R-squared = -0.05861   ROC area = 0.40110
+Buy-and-hold profit factor = 0.964   Sell-short-and-hold = 1.038
+Dual-thresholded outer PF = 0.820
+   Outer long-only PF = 0.366   Improvement Ratio = 0.380
+   Outer short-only PF = 1.441  Improvement Ratio = 1.388
+
+Out-of-sample equity-curve-based statistics for 26 bars...
+  11 long trades; total return = -1.99  mean-per-bar = -0.0765
+    Max drawdown = 2.79 on 20121113  17 bars dropping  Never recovered
+  13 short trades; total return = 1.01  mean-per-bar = 0.0389
+    Max drawdown = 1.21 on 20120215  1 bars dropping  8 days to recovery
+  24 total trades; net return = -0.98  mean-per-bar = -0.0376
+    Max drawdown = 1.83 on 20121116  2 bars dropping  Never recovered
+
+
+Trade statistics above and below the upper (long) and lower (short) thresholds
+
+                     Above          Below          Above          Below
+                     Upper          Upper          Lower          Lower
+
+N of trades             11             24             22             13
+N of winners             3              7             15             10
+Percent winners       27.3           29.2           68.2           76.9
+N of losers              8             17              7              3
+Percent losers        72.7           70.8           31.8           23.1
+Mean profit        -0.1808         0.0694        -0.0314         0.0779
+Total profit         -1.99           1.67          -0.69           1.01
+Max profit           0.762          3.416          0.597          0.623
+Min profit          -0.574         -0.623         -3.416         -1.215
+Profit factor        0.366          1.291          0.890          1.441
+Mean win            0.3824         1.0573         0.3708         0.3309
+Mean lose           0.3920         0.3373         0.8931         0.7656
+
+
+vvvvvvvvvvvvvvvvvvvvvvvvv
+
+Model FILTLONG2...
+
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Pooled out-of-sample...
+   Target grand mean = -0.00920
+      11 of 35 cases (31.43%) at or above outer high threshold  (Mean = -0.17849 versus 0.06839)
+      11 of 35 cases (31.43%) at or below outer low threshold  (Mean = 0.19069 versus -0.10082)
+MSE = 0.59233   R-squared = -0.04998   ROC area = 0.32412
+Buy-and-hold profit factor = 0.964   Sell-short-and-hold = 1.038
+Dual-thresholded outer PF = 0.468
+   Outer long-only PF = 0.423   Improvement Ratio = 0.439
+   Outer short-only PF = 0.505  Improvement Ratio = 0.486
+
+Out-of-sample equity-curve-based statistics for 26 bars...
+  11 long trades; total return = -1.96  mean-per-bar = -0.0755
+    Max drawdown = 2.96 on 20121219  12 bars dropping  Never recovered
+  11 short trades; total return = -2.10  mean-per-bar = -0.0807
+    Max drawdown = 3.42 on 20121116  1 bars dropping  Never recovered
+  22 total trades; net return = -4.06  mean-per-bar = -0.1562
+    Max drawdown = 6.37 on 20121219  12 bars dropping  Never recovered
+
+
+Trade statistics above and below the upper (long) and lower (short) thresholds
+
+                     Above          Below          Above          Below
+                     Upper          Upper          Lower          Lower
+
+N of trades             11             24             24             11
+N of winners             3              7             17              8
+Percent winners       27.3           29.2           70.8           72.7
+N of losers              8             17              7              3
+Percent losers        72.7           70.8           29.2           27.3
+Mean profit        -0.1785         0.0684         0.1008        -0.1907
+Total profit         -1.96           1.64           2.42          -2.10
+Max profit           0.660          3.416          0.597          0.623
+Min profit          -0.597         -0.623         -1.215         -3.416
+Profit factor        0.423          1.300          1.561          0.505
+Mean win            0.4795         1.0157         0.3961         0.2670
+Mean lose           0.4252         0.3217         0.6164         1.4113
+
+
+vvvvvvvvvvvvvvvvvvvvvvvvv
+
+Model FILTLONG3...
+
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Pooled out-of-sample...
+   Target grand mean = -0.00920
+      15 of 35 cases (42.86%) at or above outer high threshold  (Mean = -0.12218 versus 0.07553)
+       0 of 35 cases (0.00%) at or below outer low threshold
+MSE = 0.56951   R-squared = -0.00953   ROC area = 0.47489
+Buy-and-hold profit factor = 0.964   Sell-short-and-hold = 1.038
+Dual-thresholded outer PF = 0.588
+   Outer long-only PF = 0.588   Improvement Ratio = 0.610
+   Outer short-only PF is undefined (no cases)
+
+Out-of-sample equity-curve-based statistics for 26 bars...
+  15 long trades; total return = -1.83  mean-per-bar = -0.0705
+    Max drawdown = 2.72 on 20121113  10 bars dropping  Never recovered
+  0 short trades; total return = 0.00  mean-per-bar = 0.0000
+    Max drawdown = 0.00 on 20120202  0 bars dropping  0 days to recovery
+  15 total trades; net return = -1.83  mean-per-bar = -0.0705
+    Max drawdown = 2.72 on 20121113  10 bars dropping  Never recovered
+
+
+Trade statistics above and below the upper (long) and lower (short) thresholds
+
+                     Above          Below          Above          Below
+                     Upper          Upper          Lower          Lower
+
+N of trades             15             20             35              0
+N of winners             5              5             25              0
+Percent winners       33.3           25.0           71.4            0.0
+N of losers             10             15             10              0
+Percent losers        66.7           75.0           28.6            0.0
+Mean profit        -0.1222         0.0755         0.0092        -0.0000
+Total profit         -1.83           1.51           0.32           0.00
+Max profit           1.025          3.416          0.623         -0.000
+Min profit          -0.586         -0.623         -3.416         -0.000
+Profit factor        0.588          1.341          1.038          1.000
+Mean win            0.5228         1.1869         0.3548         1.0000
+Mean lose           0.4447         0.2949         0.8549         1.0000
+
+
+vvvvvvvvvvvvvvvvvvvvvvvvv
+
+Model FILTLONG4...
+
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Pooled out-of-sample...
+   Target grand mean = -0.00920
+       8 of 35 cases (22.86%) at or above outer high threshold  (Mean = 0.52447 versus -0.16733)
+      12 of 35 cases (34.29%) at or below outer low threshold  (Mean = -0.24039 versus 0.11142)
+MSE = 0.53817   R-squared = 0.04603   ROC area = 0.82289
+Buy-and-hold profit factor = 0.964   Sell-short-and-hold = 1.038
+Dual-thresholded outer PF = 5.277
+   Outer long-only PF = 3.897   Improvement Ratio = 4.044
+   Outer short-only PF = 14.933  Improvement Ratio = 14.391
+
+Out-of-sample equity-curve-based statistics for 26 bars...
+  8 long trades; total return = 4.20  mean-per-bar = 0.1614
+    Max drawdown = 0.81 on 20121113  1 bars dropping  1 days to recovery
+  12 short trades; total return = 2.88  mean-per-bar = 0.1110
+    Max drawdown = 0.15 on 20121026  1 bars dropping  Never recovered
+  20 total trades; net return = 7.08  mean-per-bar = 0.2723
+    Max drawdown = 0.96 on 20121113  2 bars dropping  2 days to recovery
+
+
+Trade statistics above and below the upper (long) and lower (short) thresholds
+
+                     Above          Below          Above          Below
+                     Upper          Upper          Lower          Lower
+
+N of trades              8             27             23             12
+N of winners             4              6             15             10
+Percent winners       50.0           22.2           65.2           83.3
+N of losers              4             21              8              2
+Percent losers        50.0           77.8           34.8           16.7
+Mean profit         0.5245        -0.1673        -0.1114         0.2404
+Total profit          4.20          -4.52          -2.56           2.88
+Max profit           3.416          1.215          0.597          0.623
+Min profit          -0.459         -0.623         -3.416         -0.150
+Profit factor        3.897          0.391          0.693         14.933
+Mean win            1.4110         0.4841         0.3853         0.3092
+Mean lose           0.3621         0.3534         1.0427         0.1035
+
+
+vvvvvvvvvvvvvvvvvvvvvvvvv
+
+Model FILTLONG5...
+
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Pooled out-of-sample...
+   Target grand mean = -0.00920
+      16 of 35 cases (45.71%) at or above outer high threshold  (Mean = 0.08653 versus -0.08982)
+      35 of 35 cases (100.00%) at or below outer low threshold
+MSE = 0.56351   R-squared = 0.00112   ROC area = 0.63709
+Buy-and-hold profit factor = 0.964   Sell-short-and-hold = 1.038
+Dual-thresholded outer PF = 1.135
+   Outer long-only PF = 1.336   Improvement Ratio = 1.387
+   Outer short-only PF = 1.038  Improvement Ratio = 1.000
+
+Out-of-sample equity-curve-based statistics for 26 bars...
+  16 long trades; total return = 1.38  mean-per-bar = 0.0532
+    Max drawdown = 2.92 on 20121113  19 bars dropping  19 days to recovery
+  35 short trades; total return = 0.32  mean-per-bar = 0.0124
+    Max drawdown = 4.44 on 20121116  1 bars dropping  Never recovered
+  51 total trades; net return = 1.71  mean-per-bar = 0.0656
+    Max drawdown = 1.03 on 20121116  1 bars dropping  Never recovered
+
+
+Trade statistics above and below the upper (long) and lower (short) thresholds
+
+                     Above          Below          Above          Below
+                     Upper          Upper          Lower          Lower
+
+N of trades             16             19              0             35
+N of winners             5              5              0             25
+Percent winners       31.3           26.3            0.0           71.4
+N of losers             11             14              0             10
+Percent losers        68.8           73.7            0.0           28.6
+Mean profit         0.0865        -0.0898        -0.0000         0.0092
+Total profit          1.38          -1.71           0.00           0.32
+Max profit           3.416          1.025         -0.000          0.623
+Min profit          -0.623         -0.586         -0.000         -3.416
+Profit factor        1.336          0.641          1.000          1.038
+Mean win            1.1003         0.6094         1.0000         0.3548
+Mean lose           0.3743         0.3395         1.0000         0.8549
+
+
+# # # # # # # # # # # # # # # # # # # # # # #
+
+Selection statistics for model FILTLONG1
+
+
+Variables selected...
+
+          Name   Percent
+
+
+
+# # # # # # # # # # # # # # # # # # # # # # #
+
+Selection statistics for model FILTLONG2
+
+
+Variables selected...
+
+          Name   Percent
+
+
+
+# # # # # # # # # # # # # # # # # # # # # # #
+
+Selection statistics for model FILTLONG3
+
+
+Variables selected...
+
+          Name   Percent
+
+
+
+# # # # # # # # # # # # # # # # # # # # # # #
+
+Selection statistics for model FILTLONG4
+
+
+Variables selected...
+
+          Name   Percent
+
+
+
+# # # # # # # # # # # # # # # # # # # # # # #
+
+Selection statistics for model FILTLONG5
+
+
+Variables selected...
+
+          Name   Percent
