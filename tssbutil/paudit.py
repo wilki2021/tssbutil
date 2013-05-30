@@ -164,7 +164,7 @@ class AuditParser(object):
         pstate = 1
         line = self.__get_line()
         while line != None:
-            #print 'line=%d,parse_std_result,state=%d,line=%s' % (self._lineno,pstate,line)
+            # print 'line=%d,parse_std_result,state=%d,line=%s' % (self._lineno,pstate,line)
             if pstate == 1 and patt1.match(line):
                 # this means we are parsing a pooled out-of-sample section.  We parse the
                 # next 3 rows that must contain the target grand mean and then above 
@@ -302,8 +302,8 @@ class AuditParser(object):
         # the selection statistics section has two fixed lines we need to see 
         # before we start collecting variable names
         line = self.__get_line()
-        while line != None and not self._termpatt.match(line):
-            #print 'line=%d,parse_selstats,state=%d,line=%s' % (self._lineno,pstate,line)
+        while line != None and not self._termpatt.match(line) and line.find('COMMAND') != 0:
+            # print 'line=%d,parse_selstats,state=%d,line=%s' % (self._lineno,pstate,line)
             if pstate == 0 and patt1.match(line):
                 pstate = 1
             elif pstate == 1 and patt2.match(line):
