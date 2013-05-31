@@ -29,7 +29,7 @@ pywinauto worked fine on my 64-bit Windows 7 installation and 64-bit TSSB
 executable. 
 
 The Python download page is 
-[here](http://www.python.org/getit/).  I recommend the 2.7.x non-64-bit 
+[here](http://www.python.org/getit/).  I recommend the 2.7.x 32-bit 
 Windows installer.  Install to a directory of your choice and add the Python
 directory to your PATH for convenience.
 
@@ -80,6 +80,11 @@ file.  See its docstring documentation for details on the model.
 
 This modules contains the VarParser class that can be used to parse a TSSB
 variable definition file.
+
+### tssbutil.pdb
+
+This modules contains the DbParser class that can be used to parse a TSSB
+database file.
 
 ### tssbutil.sedlite
 

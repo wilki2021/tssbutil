@@ -31,8 +31,26 @@ Contains:
 '''
 
 class DbParser(object):
+    '''
+    DbParser parses a TSSB database file (typically output via a WRITE
+    DATABASE command).  The format is relatively simple - it contains 
+    a header row and then data rows with whitespace separated values.
+    The first two columns of the file must always be 'Date' and 'Market'.
+    The remainder of the columns will be any combination of indictor,
+    model, committee, etc. output.  For now it is assumed that the 
+    combination of Day/Market is always unique - TSSB may or may not
+    impose this condition on its own but regardless it is sufficient
+    for now.
+    '''
     
     def __init__(self, filename):
+        '''
+        Constructor.
+        
+        :param string filename: database file to parse
+        
+        :throws Exception: on file not found or Day/Market columns not present
+        '''
         self.__filename = filename
         self.__columns = []
         self.__rows = {}
@@ -40,10 +58,22 @@ class DbParser(object):
         self.__parse()
     
     def get_value(self, date, market, col):
+        '''
+        Retrieves a value from the database file.
+        
+        :param string date: date portion of the retrieval key
+        :param string market: market portion of the retrieval key
+        :param string col: column to retrieve
+        
+        :returns float: value for specified date, market, column
+        :throws KeyError: if Date/Market not present
+        :throws ValueError: if column not found in database
+        '''
         key = '%s-%s' % (date, market)
         return float(self.__rows[key][self.__columns.index(col)])
     
     def __parse(self):
+        '''Parses the database file (PRIVATE),'''
         f = open(self.__filename)
         
         # get the columns
