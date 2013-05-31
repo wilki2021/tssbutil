@@ -54,6 +54,7 @@ class DbParser(object):
         self.__filename = filename
         self.__columns = []
         self.__rows = {}
+        self.__keys = []
         
         self.__parse()
     
@@ -71,6 +72,14 @@ class DbParser(object):
         '''
         key = '%s-%s' % (date, market)
         return float(self.__rows[key][self.__columns.index(col)])
+    
+    def get_keys(self):
+        '''
+        Retrieves an ordered (input order) list of (date, market)
+        tuplies.
+        '''
+        
+        return self.__keys
     
     def __parse(self):
         '''Parses the database file (PRIVATE),'''
@@ -90,5 +99,6 @@ class DbParser(object):
                 assert( len(values) == len(self.__columns) )
                 key = '%s-%s' % (values[0], values[1])
                 self.__rows[key] = values
+                self.__keys.append((values[0],values[1]))
                 
         f.close()

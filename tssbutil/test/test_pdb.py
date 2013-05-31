@@ -29,4 +29,9 @@ class Test(unittest.TestCase):
             db.get_value('20131201', 'TU2', 'COMM5')
             
         with self.assertRaises(ValueError):
-            db.get_value('20130301', 'TU2', 'COMM99')            
+            db.get_value('20130301', 'TU2', 'COMM99')
+            
+        self.assertEqual(db.get_keys()[0], ('20130301','TU2'))
+        self.assertEqual(db.get_keys()[8], ('20130412','NG2'))
+        
+                    
