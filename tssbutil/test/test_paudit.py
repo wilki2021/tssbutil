@@ -160,10 +160,14 @@ class Test(unittest.TestCase):
         insamp = f4.insample_stats()
         self.assertEqual(insamp.num_above_high,223)
         self.assertEqual(insamp.long_only_imp,1.501)
+        self.assertEqual(insamp.hi_thresh,0.22840)
+        self.assertEqual(insamp.lo_thresh,0.10384)
 
         outsamp = f4.oosample_stats()
         self.assertEqual(outsamp.num_below_low,5)
         self.assertEqual(outsamp.mean_below_low,0.06147)
+        self.assertEqual(outsamp.hi_thresh,0.22840)
+        self.assertEqual(outsamp.lo_thresh,0.10384)
 
     def testAudit4(self):
         # reuse audit1.log again, but now look for walk-forward folds

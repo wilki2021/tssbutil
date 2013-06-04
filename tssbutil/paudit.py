@@ -194,6 +194,7 @@ class AuditParser(object):
 
                 mat1 = patt3b.match(self.__get_line())
                 assert mat1.group(1) == 'hi'
+                wfmstats.hi_thresh = float(mat1.group(2))
                 wfmstats.num_above_high = int(mat1.group(3))
                 wfmstats.total_cases = int(mat1.group(4))
                 mat2 = patt4.match(mat1.group(6))
@@ -202,6 +203,7 @@ class AuditParser(object):
                 
                 mat1 = patt3b.match(self.__get_line())
                 assert mat1.group(1) == 'lo'
+                wfmstats.lo_thresh = float(mat1.group(2))
                 wfmstats.num_below_low = int(mat1.group(3))
                 mat2 = patt4.match(mat1.group(6))
                 if mat2:

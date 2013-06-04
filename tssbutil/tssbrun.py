@@ -189,6 +189,8 @@ class ModelStats(object):
         '''Constructor - initialize all members to 0.'''
         self.target_grand_mean = 0.0
         self.total_cases       = 0
+        self.hi_thresh         = 0.0
+        self.lo_thresh         = 0.0
         self.num_above_high    = 0
         self.num_below_low     = 0
         self.mean_above_high   = 0.0
