@@ -157,9 +157,12 @@ def run_tssb_try(script, tssb_path, zombie_limit=10):
             time.sleep(0.5)
 
     # step 2.5 - now we need to get the Read Script dialog open
-    while len(app.windows_(title=u'Script file to read')) == 0:
+    while True:
         try:
-            app.window_(title_re="TSSB.*").MenuSelect('File->Read Script')
+            if len(app.windows_(title=u'Script file to read')) == 0:
+                app.window_(title_re="TSSB.*").MenuSelect('File->Read Script')
+            else:
+                break
         except:
             time.sleep(0.5)
             
@@ -179,18 +182,23 @@ def run_tssb_try(script, tssb_path, zombie_limit=10):
     # step 4 - get past the file open box.  There are two possibilities-
     # either TSSB starts processing or it couldn't open the script in 
     # which case we need to detect that and bail out
-    while len(app.windows_(title=u'Script file to read')) > 0:
-        if len(app.windows_(title=u'Script file to read')) == 2:
-            # this is what happens when tssb cannot find the specified script file
-            # first close both dialogs
-            while len(app.windows_(title=u'Script file to read')) > 0:
-                app.windows_(title=u'Script file to read')[0].Close()
-            #  now close the main window
-            app.window_(title_re="TSSB.*").MenuSelect('File->Exit')
-            #  finally, throw an exception so the user knows what happened 
-            raise TSSBException('TSSB could not find script file: %s' % script)                        
+    while True:
         try:
-            app.window_(title="Script file to read").Open.Click()
+            while len(app.windows_(title=u'Script file to read')) > 0:
+                if len(app.windows_(title=u'Script file to read')) == 2:
+                    # this is what happens when tssb cannot find the specified script file
+                    # first close both dialogs
+                    while len(app.windows_(title=u'Script file to read')) > 0:
+                        app.windows_(title=u'Script file to read')[0].Close()
+                    #  now close the main window
+                    app.window_(title_re="TSSB.*").MenuSelect('File->Exit')
+                    #  finally, throw an exception so the user knows what happened 
+                    raise TSSBException('TSSB could not find script file: %s' % script)                        
+
+                app.window_(title="Script file to read").Open.Click()
+            break
+        except TSSBException:
+            raise
         except:
             time.sleep(0.5)
     
