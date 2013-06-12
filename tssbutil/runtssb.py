@@ -139,8 +139,8 @@ def run_tssb_try(script, tssb_path, zombie_limit=10):
     # step 1 - we know that there will always be a Liability Disclaimer window
     while True:
         try:
-            app.window_(title="Disclaimer of Liability").Wait('ready')
-            break
+            if len(app.windows_(title=u'Disclaimer of Liability')) > 0:
+                break
         except:
             # we don't really care what the exception is - we just know
             # that it has to show up at some point
@@ -149,8 +149,10 @@ def run_tssb_try(script, tssb_path, zombie_limit=10):
     # step 2 - now make it go away
     while True:
         try:
-            app.window_(title="Disclaimer of Liability").IAgree.Click()
-            break
+            if len(app.windows_(title=u'Disclaimer of Liability')) > 0:
+                app.window_(title="Disclaimer of Liability").IAgree.Click()
+            else:
+                break
         except:
             # we don't really care what the exception is - we just know
             # that it has to show up at some point
